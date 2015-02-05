@@ -135,6 +135,7 @@ if(BUILD_SUPERBUILD)
   return()
 endif(BUILD_SUPERBUILD)
 
+
 ######################################################################
 # End of SuperBuild. Print out where the source and binary folders
 # are, just to make it really explicit... well, explicit to the user
@@ -173,6 +174,7 @@ find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 message("Loading ITK from ${ITK_DIR}")
 
+
 ######################################################################
 # Output directories, for when compiling, not installing.
 ######################################################################
@@ -183,6 +185,13 @@ foreach(type LIBRARY RUNTIME ARCHIVE)
 endforeach()
 
 
+######################################################################
+# Setup further include folders
+######################################################################
+include_directories(Code/HelloWorld)
+include_directories(Testing/catch)
+include_directories(Testing/HelloWorld)
+ 
 ######################################################################
 # Decide what subdirectories we are building, and go and build them.
 ######################################################################

@@ -1,6 +1,6 @@
 #/*============================================================================
 #
-#  research-computing-with-cpp-demo: CMake based demo code. 
+#  research-computing-with-cpp-demo: CMake based demo code.
 #
 #  Copyright (c) University College London (UCL). All rights reserved.
 #
@@ -12,8 +12,5 @@
 #
 #============================================================================*/
 
-set(Eigen_FOUND 0)
-set(Eigen_DIR @Eigen_DIR@)
-if(Eigen_DIR AND EXISTS "@Eigen_DIR@")
-  set(Eigen_FOUND 1)
-endif()
+add_executable(HelloWorld HelloWorld.cc)
+target_link_libraries(HelloWorld ${ITK_LIBRARIES})
