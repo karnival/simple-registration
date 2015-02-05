@@ -12,11 +12,6 @@
 #
 #============================================================================*/
 
-
-#-----------------------------------------------------------------------------
-# Eigen
-#-----------------------------------------------------------------------------
-
 # Sanity checks
 if(DEFINED Eigen_DIR AND NOT EXISTS ${Eigen_DIR})
   message(FATAL_ERROR "Eigen_DIR variable is defined but corresponds to non-existing directory \"${Eigen_ROOT}\".")
