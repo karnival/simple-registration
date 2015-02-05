@@ -1,6 +1,6 @@
 #/*============================================================================
 #
-#  NifTK: A software platform for medical image computing.
+#  research-computing-with-cpp-demo: CMake based demo code. 
 #
 #  Copyright (c) University College London (UCL). All rights reserved.
 #
@@ -25,9 +25,8 @@ endif()
 set(version "3.2.2.1")
 set(location "${RCCPP_EP_TARBALL_LOCATION}/eigen-eigen-${version}.tar.bz2")
 
-niftkMacroDefineExternalProjectVariables(Eigen ${version} ${location})
-
-return()
+rccppMacroDefineExternalProjectVariables(Eigen ${version} ${location})
+set(proj_DEPENDENCIES)
 
 if(NOT DEFINED Eigen_DIR)
 

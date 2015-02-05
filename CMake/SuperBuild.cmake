@@ -1,6 +1,6 @@
 #/*============================================================================
 #
-#  NifTK: A software platform for medical image computing.
+#  research-computing-with-cpp-demo: CMake based demo code.
 #
 #  Copyright (c) University College London (UCL). All rights reserved.
 #
@@ -69,14 +69,6 @@ set(EP_COMMON_ARGS
   -DCMAKE_C_FLAGS_RELWITHDEBINFO:STRING=${CMAKE_C_FLAGS_RELWITHDEBINFO}
 )
 
-if(APPLE)
-  set(EP_COMMON_ARGS
-       -DCMAKE_OSX_ARCHITECTURES:PATH=${CMAKE_OSX_ARCHITECTURES}
-       -DCMAKE_OSX_DEPLOYMENT_TARGET:PATH=${CMAKE_OSX_DEPLOYMENT_TARGET}
-       -DCMAKE_OSX_SYSROOT:PATH=${CMAKE_OSX_SYSROOT}
-       ${EP_COMMON_ARGS}
-      )
-endif()
 
 # Compute -G arg for configuring external projects with the same CMake generator:
 if(CMAKE_EXTRA_GENERATOR)
@@ -90,11 +82,14 @@ endif()
 ######################################################################
 include(rccppExternalProjectHelperMacros)
 
+
 ######################################################################
 # Loop round for each external project, compiling it
 ######################################################################
 set(EXTERNAL_PROJECTS
   Eigen
+  Boost
+  ITK
 )
 foreach(p ${EXTERNAL_PROJECTS})
   include("CMake/CMakeExternals/${p}.cmake")
@@ -104,10 +99,10 @@ endforeach()
 ######################################################################
 # Now compile RCCPP, using the packages we just provided.
 ######################################################################
-if(NOT DEFINED SUPERBUILD_EXCLUDE_NIFTKBUILD_TARGET OR NOT SUPERBUILD_EXCLUDE_NIFTKBUILD_TARGET)
+if(NOT DEFINED SUPERBUILD_EXCLUDE_RCCPPBUILD_TARGET OR NOT SUPERBUILD_EXCLUDE_RCCPPBUILD_TARGET)
 
   set(proj RCCPP)
-  set(proj_DEPENDENCIES ${Boost_DEPENDS} ${Eigen_DEPENDS} ${ITK_DEPENDS})
+  set(proj_DEPENDENCIES ${Eigen_DEPENDS} ${Boost_DEPENDS} ${ITK_DEPENDS})
 
   ExternalProject_Add(${proj}
     DOWNLOAD_COMMAND ""
@@ -118,16 +113,14 @@ if(NOT DEFINED SUPERBUILD_EXCLUDE_NIFTKBUILD_TARGET OR NOT SUPERBUILD_EXCLUDE_NI
     CMAKE_GENERATOR ${GEN}
     CMAKE_ARGS
       ${EP_COMMON_ARGS}
-      -DNIFTK_BUILD_ALL_APPS:BOOL=${NIFTK_BUILD_ALL_APPS}
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
       -DCMAKE_VERBOSE_MAKEFILE:BOOL=${CMAKE_VERBOSE_MAKEFILE}
-      -DBUILD_TESTING:BOOL=${BUILD_TESTING} # The value set in EP_COMMON_ARGS normally forces this off, but we may need NifTK to be on.
+      -DBUILD_TESTING:BOOL=${BUILD_TESTING} # The value set in EP_COMMON_ARGS normally forces this off, but we may need RCCPP to be on.
       -DBUILD_SUPERBUILD:BOOL=OFF           # Must force this to be off, or else you will loop forever.
       -DEigen_DIR:PATH=${Eigen_DIR}
       -DEigen_ROOT:PATH=${Eigen_ROOT}
       -DEigen_INCLUDE_DIR:PATH=${Eigen_INCLUDE_DIR}
       -DBOOST_ROOT:PATH=${BOOST_ROOT}
-      -DBOOST_VERSION:STRING=${NIFTK_VERSION_Boost}
       -DBOOST_INCLUDEDIR:PATH=${BOOST_INCLUDEDIR}
       -DBOOST_LIBRARYDIR:PATH=${BOOST_LIBRARYDIR}
       -DITK_DIR:PATH=${ITK_DIR}

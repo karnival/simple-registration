@@ -1,6 +1,6 @@
 #/*============================================================================
 #
-#  NifTK: A software platform for medical image computing.
+#  research-computing-with-cpp-demo: CMake based demo code. 
 #
 #  Copyright (c) University College London (UCL). All rights reserved.
 #
@@ -15,7 +15,7 @@
 
 #########################################################################################
 #
-# Usage: niftkMacroGetCommitHashOfCurrentFile(commit_hash_var)
+# Usage: rccppMacroGetCommitHashOfCurrentFile(commit_hash_var)
 #
 # Retrieves the hash of the commit of the last modification of the CMake list file
 # from which the macro is called.
@@ -23,7 +23,7 @@
 #
 #########################################################################################
 
-macro(niftkMacroGetCommitHashOfCurrentFile commit_hash_var)
+macro(rccppMacroGetCommitHashOfCurrentFile commit_hash_var)
 
   execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:%h -- ${CMAKE_CURRENT_LIST_FILE}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -40,7 +40,7 @@ endmacro()
 
 #########################################################################################
 #
-# Usage: niftkMacroDefineExternalProjectVariables(project_name version_number)
+# Usage: rccppMacroDefineExternalProjectVariables(project_name version_number)
 #
 # Defines variables that are needed to set up an external project.
 # The proj_DEPENDENCIES variable is set to an empty list. If the project depends
@@ -48,14 +48,14 @@ endmacro()
 #
 #########################################################################################
 
-macro(niftkMacroDefineExternalProjectVariables project version location)
+macro(rccppMacroDefineExternalProjectVariables project version location)
 
-  set(NIFTK_VERSION_${project} "${version}" CACHE STRING "Version of ${project}" FORCE)
-  set(NIFTK_LOCATION_${project} "${location}" CACHE STRING "Location of ${project}" FORCE)
-  mark_as_advanced(NIFTK_VERSION_${project})
-  mark_as_advanced(NIFTK_LOCATION_${project})
+  set(RCCPP_VERSION_${project} "${version}" CACHE STRING "Version of ${project}" FORCE)
+  set(RCCPP_LOCATION_${project} "${location}" CACHE STRING "Location of ${project}" FORCE)
+  mark_as_advanced(RCCPP_VERSION_${project})
+  mark_as_advanced(RCCPP_LOCATION_${project})
 
-  niftkMacroGetCommitHashOfCurrentFile(config_version)
+  rccppMacroGetCommitHashOfCurrentFile(config_version)
 
   string(SUBSTRING ${config_version} 0 5 config_version)
 
@@ -70,7 +70,7 @@ macro(niftkMacroDefineExternalProjectVariables project version location)
   set(${project}_DEPENDS ${project})
 
   if (${location} MATCHES "^.*(\\.tar\\.gz|\\.tar\\.bz2)$")
-    niftkMacroGetChecksum(proj_CHECKSUM ${proj_LOCATION})
+    rccppMacroGetChecksum(proj_CHECKSUM ${proj_LOCATION})
   endif()
 
 endmacro()
@@ -78,7 +78,7 @@ endmacro()
 
 #########################################################################################
 #
-# Usage: niftkMacroGetChecksum(RESULT_VAR FILE_URI)
+# Usage: rccppMacroGetChecksum(RESULT_VAR FILE_URI)
 #
 # Downloads the md5 checksum file for the file and stores the checksum
 # in RESULT_VAR. It expects that the checksum file has the same name as
@@ -86,7 +86,7 @@ endmacro()
 #
 #########################################################################################
 
-macro(niftkMacroGetChecksum RESULT_VAR FILE_URI)
+macro(rccppMacroGetChecksum RESULT_VAR FILE_URI)
 
   # We expect that the checksum has the name of the original file plus
   # the '.md5' extension.
@@ -102,4 +102,4 @@ macro(niftkMacroGetChecksum RESULT_VAR FILE_URI)
   file(STRINGS "${proj_CONFIG}/src/${MD5_FILE}" checksum LIMIT_INPUT 32)
 
   set(${RESULT_VAR} ${checksum})
-endmacro(niftkMacroGetChecksum)
+endmacro()

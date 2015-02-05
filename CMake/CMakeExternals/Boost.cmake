@@ -1,6 +1,6 @@
 #/*============================================================================
 #
-#  NifTK: A software platform for medical image computing.
+#  research-computing-with-cpp-demo: CMake based demo code. 
 #
 #  Copyright (c) University College London (UCL). All rights reserved.
 #
@@ -12,10 +12,10 @@
 #
 #============================================================================*/
 
-set(MITK_USE_Boost 1)
-set(MITK_USE_Boost_LIBRARIES "filesystem;system;date_time;regex;thread;iostreams")
+set(RCCPP_USE_Boost 1)
+set(RCCPP_USE_Boost_LIBRARIES "filesystem;system;date_time;regex;thread;iostreams")
 
-if(MITK_USE_Boost)
+if(RCCPP_USE_Boost)
 
   # Sanity checks
   if(DEFINED BOOST_ROOT AND NOT EXISTS ${BOOST_ROOT})
@@ -25,23 +25,24 @@ if(MITK_USE_Boost)
   set(version "1_56_0")
   set(location "${RCCPP_EP_TARBALL_LOCATION}/boost_${version}.tar.gz")
 
-  niftkMacroDefineExternalProjectVariables(Boost ${version} ${location})
+  rccppMacroDefineExternalProjectVariables(Boost ${version} ${location})
+  set(proj_DEPENDENCIES)
 
-  string(REPLACE "^^" ";" MITK_USE_Boost_LIBRARIES "${MITK_USE_Boost_LIBRARIES}")
+  string(REPLACE "^^" ";" RCCPP_USE_Boost_LIBRARIES "${RCCPP_USE_Boost_LIBRARIES}")
 
-  if(NOT DEFINED BOOST_ROOT AND NOT MITK_USE_SYSTEM_Boost)
+  if(NOT DEFINED BOOST_ROOT AND NOT RCCPP_USE_SYSTEM_Boost)
 
     set(_boost_libs )
     set(INSTALL_COMMAND "")
 
-    if(MITK_USE_Boost_LIBRARIES)
+    if(RCCPP_USE_Boost_LIBRARIES)
 
       # Set the boost root to the libraries install directory
       set(BOOST_ROOT "${proj_INSTALL}")
 
       # We need binary boost libraries
-      string(REPLACE "^^" ";" MITK_USE_Boost_LIBRARIES "${MITK_USE_Boost_LIBRARIES}")
-      foreach(_boost_lib ${MITK_USE_Boost_LIBRARIES})
+      string(REPLACE "^^" ";" RCCPP_USE_Boost_LIBRARIES "${RCCPP_USE_Boost_LIBRARIES}")
+      foreach(_boost_lib ${RCCPP_USE_Boost_LIBRARIES})
         set(_boost_libs ${_boost_libs} --with-${_boost_lib})
       endforeach()
 
