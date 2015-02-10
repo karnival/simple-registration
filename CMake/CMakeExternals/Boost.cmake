@@ -74,6 +74,12 @@ if(RCCPP_USE_Boost)
         set(_shell_extension .sh)
       endif()
 
+      if(BUILD_SHARED_LIBS)
+        set(_boost_linkage "link=shared")
+      else()
+        set(_boost_linkage "link=static")
+      endif()
+
       if(APPLE)
         set(APPLE_CMAKE_SCRIPT ${proj_CONFIG}/ChangeBoostLibsInstallNameForMac.cmake)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/CMakeExternals/ChangeBoostLibsInstallNameForMac.cmake.in ${APPLE_CMAKE_SCRIPT} @ONLY)
@@ -87,10 +93,10 @@ if(RCCPP_USE_Boost)
 
         # Set the boost build command for apple
         set(_boost_build_cmd ${proj_SOURCE}/bjam ${APPLE_SYSROOT_FLAG} --builddir=${proj_BUILD} --prefix=${proj_INSTALL}
-            ${_boost_toolset} ${_boost_address_model} ${_boost_variant} ${_boost_libs} link=shared,static threading=multi runtime-link=shared -q install)
+            ${_boost_toolset} ${_boost_address_model} ${_boost_variant} ${_boost_libs} ${_boost_linkage} threading=multi runtime-link=shared -q install)
       else()
         set(_boost_build_cmd ${proj_SOURCE}/bjam --build-dir=${proj_BUILD} --prefix=${proj_INSTALL} ${_boost_toolset} ${_boost_address_model}
-            ${_boost_variant} ${_boost_libs} link=shared threading=multi runtime-link=shared -q install)
+            ${_boost_variant} ${_boost_libs} ${_boost_linkage}  threading=multi runtime-link=shared -q install)
       endif()
 
       set(_boost_cfg_cmd ${proj_SOURCE}/bootstrap${_shell_extension})

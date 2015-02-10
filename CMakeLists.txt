@@ -162,7 +162,7 @@ if(BUILD_SHARED_LIBS)
 else()
   set(Boost_USE_STATIC_LIBS ON)
 endif()
-find_package( Boost 1.54 COMPONENTS filesystem system date_time regex thread REQUIRED)
+find_package( Boost 1.56 COMPONENTS filesystem system date_time regex thread iostreams program_options REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
