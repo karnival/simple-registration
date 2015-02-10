@@ -13,7 +13,7 @@
 #============================================================================*/
 
 set(RCCPP_USE_Boost 1)
-set(RCCPP_USE_Boost_LIBRARIES "filesystem;system;date_time;regex;thread;iostreams")
+set(RCCPP_USE_Boost_LIBRARIES "filesystem;system;date_time;regex;thread;iostreams;program_options")
 
 if(RCCPP_USE_Boost)
 
