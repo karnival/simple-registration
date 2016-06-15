@@ -2,6 +2,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/SVD>
+#include <Eigen/Geometry>
 
 Eigen::Vector3d find_pointset_average(const Eigen::MatrixXd& pointset) {
     auto average = pointset.rowwise().mean();
@@ -12,7 +13,7 @@ Eigen::MatrixXd residuals_from_average(const Eigen::MatrixXd& pointset, const Ei
     return pointset.colwise() - point;
 }
 
-void estimate_rigid_transform(const Eigen::MatrixXd& pointset, const Eigen::MatrixXd& pointset_dash) {
+Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const Eigen::MatrixXd& pointset_dash) {
     auto p = find_pointset_average(pointset);
     auto p_dash = find_pointset_average(pointset_dash);
 
@@ -26,6 +27,14 @@ void estimate_rigid_transform(const Eigen::MatrixXd& pointset, const Eigen::Matr
     auto proposed_rotation = svd.matrixV()*(svd.matrixU()).transpose();
 
     auto translation = p_dash - proposed_rotation*p;
+
+    Eigen::Matrix4d final_transform;
+    final_transform.block(0,0,3,3) << proposed_rotation;
+    final_transform.block(0,3,3,1) << translation;
+    final_transform.block(3,0,1,3) << 0, 0, 0;
+    final_transform.block(3,3,1,1) << 1;
+
+    return final_transform;
 }
 
 int main(void) {
@@ -39,6 +48,7 @@ int main(void) {
                   2.13, 3.54, 4.26, 5.66,
                   3.00, 3.00, 3.00, 3.01;
     
-    estimate_rigid_transform(pointset, pointset_dash);
+    auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
+    std::cout << "Estimated transform is " << std::endl << estimated_transform << std::endl;
     return 0;
 }
