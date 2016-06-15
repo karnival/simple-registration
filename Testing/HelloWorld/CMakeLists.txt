@@ -13,5 +13,5 @@
 #============================================================================*/
 
 add_executable(HelloWorldTest HelloWorldTest.cc)
-target_link_libraries(HelloWorldTest ${ITK_LIBRARIES})
+target_link_libraries(HelloWorldTest)
 

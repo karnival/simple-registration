@@ -13,4 +13,4 @@
 #============================================================================*/
 
 add_executable(HelloWorld HelloWorld.cc)
-target_link_libraries(HelloWorld ${ITK_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(HelloWorld  ${Boost_LIBRARIES})

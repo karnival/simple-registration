@@ -107,7 +107,6 @@ set(CMAKE_MODULE_PATH
 ######################################################################
 # Add in any functions/macros.
 ######################################################################
-include(mitkMacroEmptyExternalProject)
 
 
 ######################################################################
@@ -168,14 +167,6 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 
 ######################################################################
-# Find ITK.
-######################################################################
-find_package(ITK REQUIRED)
-include(${ITK_USE_FILE})
-message("Loading ITK from ${ITK_DIR}")
-
-
-######################################################################
 # Output directories, for when compiling, not installing.
 ######################################################################
 foreach(type LIBRARY RUNTIME ARCHIVE)
@@ -189,6 +180,7 @@ endforeach()
 # Setup further include folders
 ######################################################################
 include_directories(Code/HelloWorld)
+include_directories(Code/PointMatching)
 include_directories(Testing/catch)
 include_directories(Testing/HelloWorld)
  

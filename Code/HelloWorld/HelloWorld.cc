@@ -17,7 +17,6 @@
 #include <Eigen/Dense>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
-#include <itkImage.h>
 
 int main(int argc, char** argv)
 {
@@ -38,10 +37,6 @@ int main(int argc, char** argv)
       ("help", "produce help message")
   ;
 
-  // Check ITK is correctly included.
-  typedef itk::Image<int, 2> ImageType;
-  ImageType::Pointer myImage = ImageType::New();
-  std::cout << "Image has region " << myImage->GetLargestPossibleRegion() << std::endl;
 
   return EXIT_SUCCESS;
 }
