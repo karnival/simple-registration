@@ -4,20 +4,18 @@
 #include <Eigen/SVD>
 
 int main(void) {
-    Eigen::MatrixXd p_set(4,3);
-    p_set << 1, 2, 3,
-             3, 2, 3,
-             1, 5, 3,
-             3, 5, 3;
+    Eigen::MatrixXd p_set(3,4);
+    p_set << 1, 3, 1, 3,
+             2, 2, 5, 5,
+             3, 3, 3, 3;
 
-    Eigen::MatrixXd p_dash_set(4,3);
-    p_dash_set << 0.28, 2.13, 3.00,
-                  1.70, 3.54, 3.00,
-                 -1.83, 4.26, 3.00,
-                 -0.41, 5.66, 3.01;
-
-    auto p = p_set.colwise().mean();
-    auto p_dash = p_dash_set.colwise().mean();
+    Eigen::MatrixXd p_dash_set(3,4);
+    p_dash_set << 0.28, 1.70,-1.83,-0.41,
+                  2.13, 3.54, 4.26, 5.66,
+                  3.00, 3.00, 3.00, 3.01;
+    
+    auto p = (p_set.rowwise().mean());
+    auto p_dash = (p_dash_set.rowwise().mean());
 
     std::cout << "p is " << p << std::endl;
     std::cout << "p' is " << p_dash << std::endl;
@@ -25,8 +23,8 @@ int main(void) {
     Eigen::Matrix3d H; 
     H.setZero();
 
-    for(int i = 0; i < p_set.rows(); i++) {
-        H += (p_set.row(i) - p).transpose() * (p_dash_set.row(i) - p_dash);
+    for(int i = 0; i < p_set.cols(); i++) {
+        H += (p_set.col(i) - p) * (p_dash_set.col(i) - p_dash).transpose();
     }
 
     std::cout << "H is " << H << std::endl;
@@ -40,6 +38,10 @@ int main(void) {
 
     std::cout << "X is " << X << std::endl;
     std::cout << "X's det is " << X.determinant() << std::endl;
+
+    auto T = p_dash - X*p;
+
+    std::cout << "T is " << T << std::endl;
 
     return 0;
 }
