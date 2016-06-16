@@ -1,3 +1,5 @@
+/* Point-based registration implemented via the method of "Least-Squares Fitting of Two 3-D Point Sets", Arun et al, 1987 */
+
 #include <cstdlib>
 #include <iostream>
 #include <Eigen/Dense>
@@ -14,6 +16,7 @@ Eigen::MatrixXd residuals_from_average(const Eigen::MatrixXd& pointset, const Ei
 }
 
 Eigen::Matrix4d create_final_transform(const Eigen::Matrix3d& rotation, const Eigen::Vector3d& translation) {
+    // Final transform is a 4x4 rigid transform matrix, with rotation part in the top-left 3x3, and translation in the top-right 3x1.
     Eigen::Matrix4d final_transform;
     final_transform.block(0,0,3,3) << rotation;
     final_transform.block(0,3,3,1) << translation;
