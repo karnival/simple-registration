@@ -12,4 +12,5 @@
 #
 #============================================================================*/
 
-add_subdirectory(PointMatching)
+add_library(PointMatching PointMatching.cc)
+target_link_libraries(PointMatching ${Boost_LIBRARIES})

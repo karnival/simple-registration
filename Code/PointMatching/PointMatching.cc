@@ -36,21 +36,3 @@ Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const 
 
     return final_transform;
 }
-
-int main(void) {
-    // Example non-pathological pointset.
-    Eigen::MatrixXd pointset(3,4);
-    pointset << 1, 3, 1, 3,
-                2, 2, 5, 5,
-                3, 3, 3, 3;
-
-    // Rotation by pi/4 about z-axis, translation by 1 on x-axis.
-    Eigen::MatrixXd pointset_dash(3,4);
-    pointset_dash << 3.10, 4.54, 5.26, 6.66,
-                     0.72,-0.71, 2.84, 1.41,
-                     3.01, 3.01, 3.01, 3.01;
-    
-    auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
-    std::cout << "Estimated transform is " << std::endl << estimated_transform << std::endl;
-    return 0;
-}

@@ -88,7 +88,7 @@ include(rccppExternalProjectHelperMacros)
 ######################################################################
 set(EXTERNAL_PROJECTS
   Eigen
-  Boost
+  #Boost
 )
 foreach(p ${EXTERNAL_PROJECTS})
   include("CMake/CMakeExternals/${p}.cmake")
@@ -101,7 +101,7 @@ endforeach()
 if(NOT DEFINED SUPERBUILD_EXCLUDE_RCCPPBUILD_TARGET OR NOT SUPERBUILD_EXCLUDE_RCCPPBUILD_TARGET)
 
   set(proj RCCPP)
-  set(proj_DEPENDENCIES ${Eigen_DEPENDS} ${Boost_DEPENDS})
+  set(proj_DEPENDENCIES ${Eigen_DEPENDS})
 
   ExternalProject_Add(${proj}
     DOWNLOAD_COMMAND ""

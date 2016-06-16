@@ -12,4 +12,6 @@
 #
 #============================================================================*/
 
-add_subdirectory(PointMatching)
+add_executable(PointMatchingTest PointMatchingTest.cc)
+target_link_libraries(PointMatchingTest)
+

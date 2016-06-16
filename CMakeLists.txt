@@ -155,12 +155,12 @@ message("Loading Eigen from ${Eigen_INCLUDE_DIR}")
 ######################################################################
 # Find Boost.
 ######################################################################
-set(Boost_NO_SYSTEM_PATHS ON)
-if(BUILD_SHARED_LIBS)
-  set(Boost_USE_STATIC_LIBS OFF)
-else()
-  set(Boost_USE_STATIC_LIBS ON)
-endif()
+#set(Boost_NO_SYSTEM_PATHS ON)
+#if(BUILD_SHARED_LIBS)
+#  set(Boost_USE_STATIC_LIBS OFF)
+#else()
+#  set(Boost_USE_STATIC_LIBS ON)
+#endif()
 find_package( Boost 1.56 COMPONENTS filesystem system date_time regex thread iostreams program_options REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
@@ -179,10 +179,9 @@ endforeach()
 ######################################################################
 # Setup further include folders
 ######################################################################
-include_directories(Code/HelloWorld)
 include_directories(Code/PointMatching)
 include_directories(Testing/catch)
-include_directories(Testing/HelloWorld)
+include_directories(Testing/PointMatching)
  
 ######################################################################
 # Decide what subdirectories we are building, and go and build them.
