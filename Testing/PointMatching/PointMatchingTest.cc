@@ -123,3 +123,21 @@ TEST_CASE( "can calculate fiducial registration error", "[fiducial_registration_
         REQUIRE( fre == Approx( 1.0 ) );
     }
 }
+
+TEST_CASE( "appropriate error handling when pointset of wrong dimensions is passed", "[estimate_rigid_transform]" ) {
+}
+
+TEST_CASE( "appropriate error handling when only one point is passed", "[estimate_rigid_transform]" ) {
+    Eigen::MatrixXd pointset(3,1);
+    pointset << 1,
+                2,
+                3;
+
+    Eigen::MatrixXd pointset_dash(3,1);
+    pointset_dash << -1,
+                     -2,
+                     -3;
+
+    auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
+    std::cout << "Estimated transform is " << std::endl << estimated_transform << std::endl;
+}

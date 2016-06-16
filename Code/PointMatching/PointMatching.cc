@@ -2,9 +2,17 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <exception>
+
 #include <Eigen/Dense>
 #include <Eigen/SVD>
 #include <Eigen/Geometry>
+
+class PointMatchingException : public std::exception {
+    virtual const char* what() const throw() {
+        return "Exception occurred in PointMatching.";
+    }
+} PointMatchingException;
 
 Eigen::Vector3d find_pointset_average(const Eigen::MatrixXd& pointset) {
     auto average = pointset.rowwise().mean();
@@ -27,6 +35,14 @@ Eigen::Matrix4d create_final_transform(const Eigen::Matrix3d& rotation, const Ei
 }
 
 Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const Eigen::MatrixXd& pointset_dash) {
+    if(pointset.cols() < 4 || pointset_dash.cols() < 4) {
+        throw(PointMatchingException);
+    }
+
+    if(pointset.rows() != 3 || pointset_dash.rows() != 3) {
+        throw(PointMatchingException);
+    }
+
     auto p = find_pointset_average(pointset);
     auto p_dash = find_pointset_average(pointset_dash);
 
