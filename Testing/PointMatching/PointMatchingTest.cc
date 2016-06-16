@@ -86,10 +86,20 @@ TEST_CASE( "can calculate fiducial registration error", "[fiducial_registration_
                 2, 3,
                 2, 4;
 
+    // Original pointset has been translated by one in each dimension.
     Eigen::MatrixXd pointset_dash(3,2);
     pointset_dash << 2, 3,
                      3, 4,
                      3, 5;
+
+    SECTION( "distance between pointsets is correct" ) {
+        Eigen::Vector2d expected_distances;
+        expected_distances << 1.73, 1.73;
+
+        auto calculated_distances = distances_between_pointsets(pointset, pointset_dash);
+
+        REQUIRE( calculated_distances.isApprox(expected_distances, 0.01) );
+    }
 
     SECTION( "fiducial registration error is approximately zero for the true transform" ) {
         Eigen::Matrix4d true_transform;
