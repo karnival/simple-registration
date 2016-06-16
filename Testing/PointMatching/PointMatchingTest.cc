@@ -2,6 +2,20 @@
 #include <catch.hpp>
 #include <PointMatching.cc>
 
+TEST_CASE( "can find pointset average", "[find_pointset_average]" ) {
+    // Create an example pointset with a known average.
+    Eigen::MatrixXd pointset(3,2);
+    pointset << 1, 1, 
+                2, 1,
+                2, 4;
+
+    Eigen::Vector3d expected_average;
+    expected_average << 1, 1.5, 3;
+
+    auto computed_average = find_pointset_average(pointset);
+    REQUIRE(computed_average.isApprox(expected_average));
+}
+
 TEST_CASE( "can estimate transform matrix", "[estimate_rigid_transform]" ) {
     // Example non-pathological pointset.
     Eigen::MatrixXd pointset(3,4);
