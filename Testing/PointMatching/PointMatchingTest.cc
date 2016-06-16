@@ -79,3 +79,37 @@ TEST_CASE( "can estimate transform matrix", "[estimate_rigid_transform]" ) {
 
     REQUIRE(estimated_transform.isApprox(expected_result, 0.01));
 }
+
+TEST_CASE( "can calculate fiducial registration error", "[fiducial_registration_error]" ) {
+    Eigen::MatrixXd pointset(3,2);
+    pointset << 1, 2,
+                2, 3,
+                2, 4;
+
+    Eigen::MatrixXd pointset_dash(3,2);
+    pointset_dash << 2, 3,
+                     3, 4,
+                     3, 5;
+
+    SECTION( "fiducial registration error is approximately zero for the true transform" ) {
+        Eigen::Matrix4d true_transform;
+        true_transform << 1, 0, 0, 1,
+                          0, 1, 0, 1,
+                          0, 0, 1, 1,
+                          0, 0, 0, 1;
+
+        auto fre = fiducial_registration_error(pointset, pointset_dash, true_transform);
+        REQUIRE( fre == Approx( 0.0 ) );
+    }
+
+    SECTION( "fiducial registration error is correct for a false transform" ) {
+        Eigen::Matrix4d false_transform;
+        false_transform << 1, 0, 0, 2,
+                           0, 1, 0, 1,
+                           0, 0, 1, 1,
+                           0, 0, 0, 1;
+
+        auto fre = fiducial_registration_error(pointset, pointset_dash, false_transform);
+        REQUIRE( fre == Approx( 1.0 ) );
+    }
+}
