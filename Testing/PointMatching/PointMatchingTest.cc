@@ -16,6 +16,46 @@ TEST_CASE( "can find pointset average", "[find_pointset_average]" ) {
     REQUIRE(computed_average.isApprox(expected_average));
 }
 
+TEST_CASE( "can find residuals between a pointset and a vector", "residuals_from_average" ) {
+    // Create an example pointset and vector with known residuals.
+    Eigen::MatrixXd pointset(3,2);
+    pointset << 1, 2,
+                3, 4,
+                5, 6;
+
+    Eigen::Vector3d example_vector;
+    example_vector << 1, 3, 2;
+
+    auto expected_residuals = pointset;
+    expected_residuals << 0, 1,
+                          0, 1,
+                          3, 4;
+
+    auto calculated_residuals = residuals_from_average(pointset, example_vector);
+
+    REQUIRE(calculated_residuals.isApprox(expected_residuals));
+}
+
+TEST_CASE( "composition of rotation and translation works as expected ", "[create_final_transform]") {
+    Eigen::Matrix3d rotation;
+    rotation << 0.71, 0.71, 0.00,
+               -0.71, 0.71, 0.00,
+                0.00, 0.00, 1.00;
+
+    Eigen::Vector3d translation;
+    translation << 1, 2, 3;
+
+    Eigen::Matrix4d expected_composed;
+    expected_composed << 0.71, 0.71, 0.00, 1.00,
+                        -0.71, 0.71, 0.00, 2.00,
+                         0.00, 0.00, 1.00, 3.00,
+                         0.00, 0.00, 0.00, 1.00;
+
+    auto calculated_composition = create_final_transform(rotation, translation);
+
+    REQUIRE(calculated_composition.isApprox(expected_composed, 0.01));
+}
+
 TEST_CASE( "can estimate transform matrix", "[estimate_rigid_transform]" ) {
     // Example non-pathological pointset.
     Eigen::MatrixXd pointset(3,4);
