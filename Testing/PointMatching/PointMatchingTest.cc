@@ -23,6 +23,5 @@ TEST_CASE( "can estimate transform matrix", "[estimate_rigid_transform]" ) {
         
     auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
 
-    REQUIRE(1 == 1);
-    //REQUIRE(estimated_transform.isApprox(expected_result));
+    REQUIRE(estimated_transform.isApprox(expected_result, 0.01));
 }

@@ -13,6 +13,16 @@ Eigen::MatrixXd residuals_from_average(const Eigen::MatrixXd& pointset, const Ei
     return pointset.colwise() - point;
 }
 
+Eigen::Matrix4d create_final_transform(const Eigen::Matrix3d& rotation, const Eigen::Vector3d& translation) {
+    Eigen::Matrix4d final_transform;
+    final_transform.block(0,0,3,3) << rotation;
+    final_transform.block(0,3,3,1) << translation;
+    final_transform.block(3,0,1,3) << 0, 0, 0;
+    final_transform.block(3,3,1,1) << 1;
+
+    return final_transform;
+}
+
 Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const Eigen::MatrixXd& pointset_dash) {
     auto p = find_pointset_average(pointset);
     auto p_dash = find_pointset_average(pointset_dash);
@@ -28,11 +38,7 @@ Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const 
 
     auto translation = p_dash - proposed_rotation*p;
 
-    Eigen::Matrix4d final_transform;
-    final_transform.block(0,0,3,3) << proposed_rotation;
-    final_transform.block(0,3,3,1) << translation;
-    final_transform.block(3,0,1,3) << 0, 0, 0;
-    final_transform.block(3,3,1,1) << 1;
+    auto final_transform = create_final_transform(proposed_rotation, translation);
 
     return final_transform;
 }
