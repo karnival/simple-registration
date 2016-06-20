@@ -224,5 +224,14 @@ TEST_CASE( "can handle coplanar/colinear" ) {
                          1, 2, 5, 1;
 
         REQUIRE_NOTHROW( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash) );
+
+        auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
+        Eigen::Matrix4d expected_transform;
+        expected_transform << 0, 0, 1, 0,
+                              0,-1, 0, 0,
+                              1, 0, 0, 0,
+                              0, 0, 0, 1;
+
+        REQUIRE( estimated_transform.isApprox(expected_transform) );
     }
 }
