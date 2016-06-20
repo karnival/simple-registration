@@ -14,3 +14,6 @@
 
 add_library(PointMatching PointMatching.cc)
 target_link_libraries(PointMatching ${Boost_LIBRARIES})
+
+add_executable(PointMatchingCmd PointMatchingCmd.cc)
+target_link_libraries(PointMatchingCmd PointMatching ${Boost_LIBRARIES})
