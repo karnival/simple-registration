@@ -83,9 +83,11 @@ int main(int argc, char** argv) {
         Eigen::MatrixXd pointcloud1;
         Eigen::MatrixXd pointcloud2;
 
-        load_pointcloud_from_file(data1);
-        load_pointcloud_from_file(data2);
+        auto cloud1 = load_pointcloud_from_file(data1);
+        auto cloud2 = load_pointcloud_from_file(data2);
 
+        auto transform = estimate_rigid_transform(cloud1, cloud2);
+        std::cout << "Estimated transform was " << std::endl << transform << std::endl;
     } catch(std::exception& e) {
         std::cerr << "Unhandled Exception reached the top of main: " 
                   << e.what() << ", application will now exit" << std::endl; 
