@@ -125,19 +125,59 @@ TEST_CASE( "can calculate fiducial registration error", "[fiducial_registration_
 }
 
 TEST_CASE( "appropriate error handling when pointset of wrong dimensions is passed", "[estimate_rigid_transform]" ) {
-}
+    SECTION( "appropriate error handling when only one point is passed", "[estimate_rigid_transform]" ) {
+        Eigen::MatrixXd pointset(3,1);
+        pointset << 1,
+                    2,
+                    3;
+    
+        Eigen::MatrixXd pointset_dash(3,1);
+        pointset_dash << -1,
+                         -2,
+                         -3;
+    
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+    }
 
-TEST_CASE( "appropriate error handling when only one point is passed", "[estimate_rigid_transform]" ) {
-    Eigen::MatrixXd pointset(3,1);
-    pointset << 1,
-                2,
-                3;
+    SECTION( "appropriate error handling when only two points are passed", "[estimate_rigid_transform]" ) {
+        Eigen::MatrixXd pointset(3,2);
+        pointset << 1, 2,
+                    2, 3,
+                    3, 4;
+    
+        Eigen::MatrixXd pointset_dash(3,2);
+        pointset_dash << -1, 0,
+                         -2,-1,
+                         -3,-2;
+    
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+    }
 
-    Eigen::MatrixXd pointset_dash(3,1);
-    pointset_dash << -1,
-                     -2,
-                     -3;
+    SECTION( "appropriate error handling when too few dimensions are passed", "[estimate_rigid_transform]" ) {
+        Eigen::MatrixXd pointset(2,4);
+        pointset << 1, 2, 3, 4,
+                    2, 3, 4, 5;
+    
+        Eigen::MatrixXd pointset_dash(2,4);
+        pointset_dash << -1, 0, 1, 2,
+                         -2,-1, 0, 1;
+    
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+    }
 
-    auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
-    std::cout << "Estimated transform is " << std::endl << estimated_transform << std::endl;
+    SECTION( "appropriate error handling when too many dimensions are passed", "[estimate_rigid_transform]" ) {
+        Eigen::MatrixXd pointset(4,4);
+        pointset << 1, 2, 3, 4,
+                    2, 3, 4, 5,
+                    1, 2, 3, 4,
+                    1, 2, 6, 8;
+    
+        Eigen::MatrixXd pointset_dash(4,4);
+        pointset_dash << -1,  0, 1, 2,
+                         -2, -1, 0, 1,
+                         -1,  0, 1, 2,
+                         -1,  0, 2, 1;
+    
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+    }
 }

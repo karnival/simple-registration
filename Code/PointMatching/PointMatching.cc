@@ -12,7 +12,7 @@ class PointMatchingException : public std::exception {
     virtual const char* what() const throw() {
         return "Exception occurred in PointMatching.";
     }
-} PointMatchingException;
+} PointMatchingEx;
 
 Eigen::Vector3d find_pointset_average(const Eigen::MatrixXd& pointset) {
     auto average = pointset.rowwise().mean();
@@ -36,11 +36,18 @@ Eigen::Matrix4d create_final_transform(const Eigen::Matrix3d& rotation, const Ei
 
 Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const Eigen::MatrixXd& pointset_dash) {
     if(pointset.cols() < 4 || pointset_dash.cols() < 4) {
-        throw(PointMatchingException);
+        std::cerr << "Not enough points provided -- there should be at least four points in the point cloud." << std::endl;
+        throw(PointMatchingEx);
     }
 
     if(pointset.rows() != 3 || pointset_dash.rows() != 3) {
-        throw(PointMatchingException);
+        std::cerr << "Points must be 3D." << std::endl;
+        throw(PointMatchingEx);
+    }
+
+    if(pointset.cols() != pointset_dash.cols()) {
+        std::cerr << "Pointsets must have the same number of points." << std::endl;
+        throw(PointMatchingEx);
     }
 
     auto p = find_pointset_average(pointset);
