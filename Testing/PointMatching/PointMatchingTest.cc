@@ -197,5 +197,32 @@ TEST_CASE( "appropriate error handling when pointset of wrong dimensions is pass
     }
 }
 
-TEST_CASE () {
+TEST_CASE( "can handle coplanar/colinear" ) {
+    SECTION( "colinear -- should fail with exception" ) {
+        Eigen::MatrixXd pointset(3,4);
+        pointset << 1, 2, 3, 1,
+                    2, 3, 4, 2,
+                    1, 2, 3, 1;
+
+        Eigen::MatrixXd pointset_dash(3,4);
+        pointset_dash << 1, 2, 3, 1,
+                        -2,-3,-4,-2,
+                         1, 2, 3, 1;
+
+        REQUIRE_THROWS_AS(auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+    }
+
+    SECTION( "coplanar -- should be able to find a rotation" ) {
+        Eigen::MatrixXd pointset(3,4);
+        pointset << 1, 2, 5, 1,
+                    2, 3, 4, 2,
+                    1, 2, 5, 1;
+
+        Eigen::MatrixXd pointset_dash(3,4);
+        pointset_dash << 1, 2, 5, 1,
+                        -2,-3,-4,-2,
+                         1, 2, 5, 1;
+
+        auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
+    }
 }

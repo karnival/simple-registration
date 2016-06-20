@@ -83,11 +83,11 @@ Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const 
             V_new.block(0,2,V_new.rows(),1) = -1 * V_new.block(0,2,V_new.rows(),1);
             rotation = V_new*(svd.matrixU()).transpose();
         } else {
-            std::cerr << "Could not find a rotation. Overlapping points in point cloud, or very noisy data?" << std::endl;
+            std::cerr << "Could not find a rotation. Colinear point cloud seems likely, or perhaps very noisy data?" << std::endl;
             throw(PointMatchingEx);
         }
     } else {
-        std::cerr << "Could not find a rotation. Overlapping points in point cloud, or very noisy data?" << std::endl;
+        std::cerr << "Could not find a rotation from SVD. Very noisy or otherwise invalid data?" << std::endl;
         throw(PointMatchingEx);
     }
 
