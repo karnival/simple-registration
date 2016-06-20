@@ -180,4 +180,19 @@ TEST_CASE( "appropriate error handling when pointset of wrong dimensions is pass
     
         REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
     }
+
+    SECTION( "throws error when pointsets are not the same size" ) {
+        Eigen::MatrixXd pointset(3,4);
+        pointset << 1, 2, 3, 4,
+                    2, 3, 4, 5,
+                    1, 2, 3, 4;
+    
+        Eigen::MatrixXd pointset_dash(3,5);
+        pointset_dash << -1,  0, 1, 2, 4,
+                         -2, -1, 0, 1, 2,
+                         -1,  0, 1, 2, 3;
+    
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+
+    }
 }
