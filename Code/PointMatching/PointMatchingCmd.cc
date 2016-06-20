@@ -1,10 +1,31 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
 #include <PointMatching.cc>
+
+Eigen::MatrixXd load_pointcloud_from_file(std::string fn) {
+    int max_points = 1024;
+    Eigen::MatrixXd points(3,max_points);
+
+    std::ifstream infile;
+    infile.open(fn);
+
+    double x, y, z;
+
+    int i = 0;
+    while(infile >> x >> y >> z) {
+        points.col(i) << x, y, z;
+        i++;
+    }
+    infile.close();
+
+    auto pointcloud = points.block(0,0,3,i);
+    return pointcloud;
+}
 
 int main(int argc, char** argv) {
     try {
@@ -59,6 +80,12 @@ int main(int argc, char** argv) {
             std::cout << "out was " << vm["out"].as<std::string>() << std::endl;
         }
       
+        Eigen::MatrixXd pointcloud1;
+        Eigen::MatrixXd pointcloud2;
+
+        load_pointcloud_from_file(data1);
+        load_pointcloud_from_file(data2);
+
     } catch(std::exception& e) {
         std::cerr << "Unhandled Exception reached the top of main: " 
                   << e.what() << ", application will now exit" << std::endl; 
