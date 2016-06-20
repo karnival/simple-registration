@@ -44,6 +44,33 @@ Eigen::Matrix4d create_final_transform(const Eigen::Matrix3d& rotation, const Ei
     return final_transform;
 }
 
+Eigen::Matrix3d find_rotation(const Eigen::MatrixXd& H) {
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(H, Eigen::ComputeFullU | Eigen::ComputeFullV);
+
+    Eigen::Matrix3d rotation;
+
+    auto proposed_rotation = svd.matrixV()*(svd.matrixU()).transpose();
+    if(isApproxEqual(proposed_rotation.determinant(), 1)) {
+        rotation = proposed_rotation;
+    } else if(isApproxEqual(proposed_rotation.determinant(), -1)) {
+        // Determinant of -1 can mean we've calculated a reflection (and so can compute a rotation) or we have insurmountable noise problems.
+        auto lambda = svd.singularValues();
+        if(isApproxEqual(lambda(2), 0) && !isApproxEqual(lambda(1), 0) && !isApproxEqual(lambda(0), 0)) { // This is a reflection.
+            auto V_new = svd.matrixV();
+            V_new.block(0,2,V_new.rows(),1) = -1 * V_new.block(0,2,V_new.rows(),1);
+            rotation = V_new*(svd.matrixU()).transpose();
+        } else {
+            std::cerr << "Could not find a rotation. Colinear point cloud seems likely, or perhaps very noisy data?" << std::endl;
+            throw(PointMatchingEx);
+        }
+    } else {
+        std::cerr << "Could not find a rotation from SVD. Very noisy or otherwise invalid data?" << std::endl;
+        throw(PointMatchingEx);
+    }
+
+    return rotation;
+}
+
 Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const Eigen::MatrixXd& pointset_dash) {
     if(pointset.cols() < 4 || pointset_dash.cols() < 4) {
         std::cerr << "Not enough points provided -- there should be at least four points in the point cloud." << std::endl;
@@ -68,28 +95,7 @@ Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const 
 
     auto H = q * q_dash.transpose();
 
-    Eigen::JacobiSVD<Eigen::MatrixXd> svd(H, Eigen::ComputeFullU | Eigen::ComputeFullV);
-
-    Eigen::Matrix3d rotation;
-
-    auto proposed_rotation = svd.matrixV()*(svd.matrixU()).transpose();
-    if(isApproxEqual(proposed_rotation.determinant(), 1)) {
-        rotation = proposed_rotation;
-    } else if(isApproxEqual(proposed_rotation.determinant(), -1)) {
-        // Determinant of -1 can mean we've calculated a reflection (and so can compute a rotation) or we have insurmountable noise problems.
-        auto lambda = svd.singularValues();
-        if(isApproxEqual(lambda(2), 0) && !isApproxEqual(lambda(1), 0) && !isApproxEqual(lambda(0), 0)) { // This is a reflection.
-            auto V_new = svd.matrixV();
-            V_new.block(0,2,V_new.rows(),1) = -1 * V_new.block(0,2,V_new.rows(),1);
-            rotation = V_new*(svd.matrixU()).transpose();
-        } else {
-            std::cerr << "Could not find a rotation. Colinear point cloud seems likely, or perhaps very noisy data?" << std::endl;
-            throw(PointMatchingEx);
-        }
-    } else {
-        std::cerr << "Could not find a rotation from SVD. Very noisy or otherwise invalid data?" << std::endl;
-        throw(PointMatchingEx);
-    }
+    auto rotation = find_rotation(H);
 
     auto translation = p_dash - rotation*p;
 
