@@ -196,3 +196,6 @@ TEST_CASE( "appropriate error handling when pointset of wrong dimensions is pass
 
     }
 }
+
+TEST_CASE () {
+}

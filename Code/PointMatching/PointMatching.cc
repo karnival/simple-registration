@@ -78,11 +78,8 @@ Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const 
     } else if(isApproxEqual(proposed_rotation.determinant(), -1)) {
         // Determinant of -1 can mean we've calculated a reflection (and so can compute a rotation) or we have insurmountable noise problems.
         auto lambda = svd.singularValues();
-        std::cout << "Lambda was set to " << std::endl << lambda << std::endl;
-        std::cout << "Is approx zero? " << isApproxEqual(lambda(2), 0) << std::endl;
         if(isApproxEqual(lambda(2), 0) && !isApproxEqual(lambda(1), 0) && !isApproxEqual(lambda(0), 0)) { // This is a reflection.
             auto V_new = svd.matrixV();
-            std::cout << "Try to set block." << std::endl;
             V_new.block(0,2,V_new.rows(),1) = -1 * V_new.block(0,2,V_new.rows(),1);
             rotation = V_new*(svd.matrixU()).transpose();
         } else {
@@ -94,9 +91,9 @@ Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const 
         throw(PointMatchingEx);
     }
 
-    auto translation = p_dash - proposed_rotation*p;
+    auto translation = p_dash - rotation*p;
 
-    auto final_transform = create_final_transform(proposed_rotation, translation);
+    auto final_transform = create_final_transform(rotation, translation);
 
     return final_transform;
 }
