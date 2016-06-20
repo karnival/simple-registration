@@ -8,6 +8,11 @@
 #include <Eigen/SVD>
 #include <Eigen/Geometry>
 
+bool isApproxEqual(double a, double b, double eps) {
+    auto diff = std::abs(a - b);
+    return diff < eps;
+}
+
 class PointMatchingException : public std::exception {
     virtual const char* what() const throw() {
         return "Exception occurred in PointMatching.";
@@ -60,7 +65,29 @@ Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const 
 
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(H, Eigen::ComputeFullU | Eigen::ComputeFullV);
 
+    Eigen::Matrix3d rotation;
+
     auto proposed_rotation = svd.matrixV()*(svd.matrixU()).transpose();
+    if(isApproxEqual(proposed_rotation.determinant(), 1, 0.001)) {
+        rotation = proposed_rotation;
+    } else if(isApproxEqual(proposed_rotation.determinant(), -1, 0.001)) {
+        // Determinant of -1 can mean we've calculated a reflection (and so can compute a rotation) or we have insurmountable noise problems.
+        auto lambda = svd.singularValues();
+        std::cout << "Lambda was set to " << std::endl << lambda << std::endl;
+        std::cout << "Is approx zero? " << isApproxEqual(lambda(2), 0, 0.001) << std::endl;
+        if(isApproxEqual(lambda(2), 0, 0.001)) { // This is a reflection.
+            auto V_new = svd.matrixV();
+            std::cout << "Try to set block." << std::endl;
+            V_new.block(0,2,V_new.rows(),1) = -1 * V_new.block(0,2,V_new.rows(),1);
+            rotation = V_new*(svd.matrixU()).transpose();
+        } else {
+            std::cerr << "Could not find a rotation. Overlapping points in point cloud, or very noisy data?" << std::endl;
+            throw(PointMatchingEx);
+        }
+    } else {
+        std::cerr << "Could not find a rotation. Overlapping points in point cloud, or very noisy data?" << std::endl;
+        throw(PointMatchingEx);
+    }
 
     auto translation = p_dash - proposed_rotation*p;
 
