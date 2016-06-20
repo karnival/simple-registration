@@ -13,7 +13,7 @@ TEST_CASE( "can find pointset average", "[find_pointset_average]" ) {
     expected_average << 1, 1.5, 3;
 
     auto computed_average = find_pointset_average(pointset);
-    REQUIRE(computed_average.isApprox(expected_average));
+    REQUIRE( computed_average.isApprox(expected_average) );
 }
 
 TEST_CASE( "can find residuals between a pointset and a vector", "residuals_from_average" ) {
@@ -33,7 +33,7 @@ TEST_CASE( "can find residuals between a pointset and a vector", "residuals_from
 
     auto calculated_residuals = residuals_from_average(pointset, example_vector);
 
-    REQUIRE(calculated_residuals.isApprox(expected_residuals));
+    REQUIRE( calculated_residuals.isApprox(expected_residuals) );
 }
 
 TEST_CASE( "composition of rotation and translation works as expected ", "[create_final_transform]") {
@@ -53,7 +53,7 @@ TEST_CASE( "composition of rotation and translation works as expected ", "[creat
 
     auto calculated_composition = create_final_transform(rotation, translation);
 
-    REQUIRE(calculated_composition.isApprox(expected_composed, 0.01));
+    REQUIRE( calculated_composition.isApprox(expected_composed, 0.01) );
 }
 
 TEST_CASE( "can estimate transform matrix", "[estimate_rigid_transform]" ) {
@@ -77,7 +77,7 @@ TEST_CASE( "can estimate transform matrix", "[estimate_rigid_transform]" ) {
         
     auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
 
-    REQUIRE(estimated_transform.isApprox(expected_result, 0.01));
+    REQUIRE( estimated_transform.isApprox(expected_result, 0.01) );
 }
 
 TEST_CASE( "can calculate fiducial registration error", "[fiducial_registration_error]" ) {
@@ -136,7 +136,7 @@ TEST_CASE( "appropriate error handling when pointset of wrong dimensions is pass
                          -2,
                          -3;
     
-        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException );
     }
 
     SECTION( "appropriate error handling when only two points are passed", "[estimate_rigid_transform]" ) {
@@ -150,7 +150,7 @@ TEST_CASE( "appropriate error handling when pointset of wrong dimensions is pass
                          -2,-1,
                          -3,-2;
     
-        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException );
     }
 
     SECTION( "appropriate error handling when too few dimensions are passed", "[estimate_rigid_transform]" ) {
@@ -162,7 +162,7 @@ TEST_CASE( "appropriate error handling when pointset of wrong dimensions is pass
         pointset_dash << -1, 0, 1, 2,
                          -2,-1, 0, 1;
     
-        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException );
     }
 
     SECTION( "appropriate error handling when too many dimensions are passed", "[estimate_rigid_transform]" ) {
@@ -178,7 +178,7 @@ TEST_CASE( "appropriate error handling when pointset of wrong dimensions is pass
                          -1,  0, 1, 2,
                          -1,  0, 2, 1;
     
-        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException );
     }
 
     SECTION( "throws error when pointsets are not the same size" ) {
@@ -192,7 +192,7 @@ TEST_CASE( "appropriate error handling when pointset of wrong dimensions is pass
                          -2, -1, 0, 1, 2,
                          -1,  0, 1, 2, 3;
     
-        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException );
 
     }
 }
@@ -209,7 +209,7 @@ TEST_CASE( "can handle coplanar/colinear" ) {
                         -2,-3,-4,-2,
                          1, 2, 3, 1;
 
-        REQUIRE_THROWS_AS(auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException);
+        REQUIRE_THROWS_AS( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash), PointMatchingException ) ;
     }
 
     SECTION( "coplanar -- should be able to find a rotation" ) {
@@ -223,6 +223,6 @@ TEST_CASE( "can handle coplanar/colinear" ) {
                         -2,-3,-4,-2,
                          1, 2, 5, 1;
 
-        auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash);
+        REQUIRE_NOTHROW( auto estimated_transform = estimate_rigid_transform(pointset, pointset_dash) );
     }
 }
