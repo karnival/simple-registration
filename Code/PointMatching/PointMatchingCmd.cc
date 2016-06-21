@@ -9,28 +9,33 @@
 
 Eigen::MatrixXd load_pointcloud_from_file(std::string filename) {
     int max_points = 1024;
+    int line_counter = 0;
     Eigen::MatrixXd points(3,max_points);
 
     std::ifstream infile;
-    infile.exceptions(std::ifstream::failbit);
+    infile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
     try {
         infile.open(filename);
     
         double x, y, z;
     
-        int i = 0;
         while(infile >> x >> y >> z) {
-            points.col(i) << x, y, z;
-            i++;
+            points.col(line_counter) << x, y, z;
+            line_counter++;
         }
 
-        infile.close();
-
-        auto pointcloud = points.block(0,0,3,i);
-        return pointcloud;
     } catch(std::ifstream::failure e) {
-        std::cerr << "Could not read file " << filename << std::endl;
-        throw(PointMatchingEx);
+        if(!infile.eof()) {
+            // Any reason other than EOF is a failure. TODO: give a specific error message for non-existent file.
+            std::cerr << "Could not read file " << filename << std::endl;
+            throw(PointMatchingEx);
+        } else{
+            infile.close();
+
+            auto pointcloud = points.block(0,0,3,line_counter);
+            return pointcloud;
+        }
     }
 
 }
