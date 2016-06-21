@@ -7,24 +7,32 @@
 
 #include <PointMatching.cc>
 
-Eigen::MatrixXd load_pointcloud_from_file(std::string fn) {
+Eigen::MatrixXd load_pointcloud_from_file(std::string filename) {
     int max_points = 1024;
     Eigen::MatrixXd points(3,max_points);
 
     std::ifstream infile;
-    infile.open(fn);
+    infile.exceptions(std::ifstream::failbit);
+    try {
+        infile.open(filename);
+    
+        double x, y, z;
+    
+        int i = 0;
+        while(infile >> x >> y >> z) {
+            points.col(i) << x, y, z;
+            i++;
+        }
 
-    double x, y, z;
+        infile.close();
 
-    int i = 0;
-    while(infile >> x >> y >> z) {
-        points.col(i) << x, y, z;
-        i++;
+        auto pointcloud = points.block(0,0,3,i);
+        return pointcloud;
+    } catch(std::ifstream::failure e) {
+        std::cerr << "Could not read file " << filename << std::endl;
+        throw(PointMatchingEx);
     }
-    infile.close();
 
-    auto pointcloud = points.block(0,0,3,i);
-    return pointcloud;
 }
 
 int main(int argc, char** argv) {
