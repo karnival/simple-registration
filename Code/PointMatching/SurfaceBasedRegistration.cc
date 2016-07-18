@@ -28,5 +28,5 @@ Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::
         surface3.col(i) << surface2.col(lookup_table[i]);
     }
 
-    return estimate_rigid_transform(surface1, surface3);
+    auto transform = estimate_rigid_transform(surface1, surface3);
 }

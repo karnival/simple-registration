@@ -40,3 +40,16 @@ Eigen::Matrix4d compose_final_transform(const Eigen::Matrix3d& rotation, const E
     return final_transform;
 }
 
+Eigen::MatrixXd apply_transform(const Eigen::MatrixXd& pointset, const Eigen::Matrix4d& transform) {
+    // Need to add a one on the end of each vector, for the translation part of the transform.
+    Eigen::MatrixXd pointset_augmented(4,pointset.cols());
+    pointset_augmented.block(0,0,3,pointset.cols()) << pointset;
+    pointset_augmented.block(3,0,1,pointset.cols()) << Eigen::MatrixXd::Constant(1, pointset.cols(), 1);
+
+    auto proposed_pointset = transform * pointset_augmented;
+
+    // Now remove the unnecessary bottom row of the transformed pointset.
+    auto proposed_pointset_reduced = proposed_pointset.block(0,0,3,pointset.cols());
+
+    return proposed_pointset_reduced;
+}

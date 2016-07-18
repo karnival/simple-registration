@@ -76,17 +76,9 @@ Eigen::Matrix4d estimate_rigid_transform(const Eigen::MatrixXd& pointset, const 
 }
 
 double fiducial_registration_error(const Eigen::MatrixXd& pointset, const Eigen::MatrixXd& pointset_dash, const Eigen::Matrix4d& transform) {
-    // Need to add a one on the end of each vector, for the translation part of the transform.
-    Eigen::MatrixXd pointset_augmented(4,pointset.cols());
-    pointset_augmented.block(0,0,3,pointset.cols()) << pointset;
-    pointset_augmented.block(3,0,1,pointset.cols()) << Eigen::MatrixXd::Constant(1, pointset.cols(), 1);
+    auto transformed = apply_transform(pointset, transform);
 
-    auto proposed_pointset = transform * pointset_augmented;
-
-    // Now remove the unnecessary bottom row of the transformed pointset.
-    auto proposed_pointset_reduced = proposed_pointset.block(0,0,3,pointset.cols());
-
-    auto error_per_vector = distances_between_pointsets(proposed_pointset_reduced, pointset_dash);
+    auto error_per_vector = distances_between_pointsets(transformed, pointset_dash);
     auto fre = root_mean_square(error_per_vector);
 
     return fre;
