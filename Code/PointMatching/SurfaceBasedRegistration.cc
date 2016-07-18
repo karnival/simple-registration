@@ -1,6 +1,6 @@
 #include <PointMatching.cc>
 
-Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::MatrixXd& surface2) {
+Eigen::MatrixXd find_closest_points(const Eigen::MatrixXd& surface1, const Eigen::MatrixXd& surface2) {
     int lookup_table[surface1.cols()];
     for(int i = 0; i < surface1.cols(); i++) {
         lookup_table[i] = i;
@@ -28,5 +28,17 @@ Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::
         surface3.col(i) << surface2.col(lookup_table[i]);
     }
 
-    auto transform = estimate_rigid_transform(surface1, surface3);
+    return surface3;
+}
+
+Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::MatrixXd& surface2) {
+    auto transform = estimate_rigid_transform(surface1, surface2);
+
+    for(int i = 0; i < 10; i++) {
+        auto transformed_pointcloud = apply_transform(surface2, transform);
+        auto closest_points = find_closest_points(surface1, transformed_pointcloud);
+        transform = estimate_rigid_transform(surface1, closest_points);
+    }
+
+    return transform;
 }
