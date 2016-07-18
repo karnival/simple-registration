@@ -12,9 +12,6 @@
 #
 #============================================================================*/
 
-add_executable(runner runner.cc)
-target_link_libraries(runner)
-
 add_executable(PointMatchingTest PointMatchingTest.cc)
 target_link_libraries(PointMatchingTest)
 

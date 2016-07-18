@@ -20,3 +20,6 @@ target_link_libraries(PointMatchingCmd PointMatching ${Boost_LIBRARIES})
 
 add_library(SurfaceBasedRegistration SurfaceBasedRegistration.cc)
 target_link_libraries(SurfaceBasedRegistration PointMatching ${Boost_LIBRARIES})
+
+add_executable(SurfaceBasedRegistrationCmd SurfaceBasedRegistrationCmd.cc)
+target_link_libraries(SurfaceBasedRegistrationCmd SurfaceBasedRegistration ${Boost_LIBRARIES})

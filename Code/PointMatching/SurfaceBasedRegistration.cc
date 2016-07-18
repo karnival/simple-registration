@@ -22,15 +22,11 @@ Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::
         }
     }
     
-    std::cout << lookup_table[0] << " " << lookup_table[1] << " " << lookup_table[2] << " " << lookup_table [3] << std::endl;
-
     // Now reorder the floating surface so corresponding points are in the same locations for floating and reference.
     auto surface3 = surface2;
     for(int i = 0; i < surface1.cols(); i++) {
         surface3.col(i) << surface2.col(lookup_table[i]);
     }
 
-    std::cout << "End matrix is " << surface3 << std::endl;
-    std::cout << estimate_rigid_transform(surface1, surface3) << std::endl;
     return estimate_rigid_transform(surface1, surface3);
 }
