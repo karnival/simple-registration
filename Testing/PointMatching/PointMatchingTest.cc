@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include <catch.hpp>
-#include <PointMatching.cc>
+#include <SurfaceBasedRegistration.cc>
 
 TEST_CASE( "can find pointset average", "[find_pointset_average]" ) {
     // Create an example pointset with a known average.
@@ -234,4 +234,27 @@ TEST_CASE( "can handle coplanar/colinear" ) {
 
         REQUIRE( estimated_transform.isApprox(expected_transform) );
     }
+}
+
+TEST_CASE( "can register two surfaces", "[register_surfaces]" ) {
+    Eigen::MatrixXd surface1(3,4);
+    Eigen::MatrixXd surface2(3,4);
+
+    surface1 << 1, 2, 5, 8,
+                1, 8, 2, 3,
+                2, 6, 2, 8;
+
+    surface2 << 2, 1, 5, 8,
+                8, 1, 2, 3,
+                6, 2, 2, 8;
+
+    Eigen::Matrix4d expected_result;
+    expected_result <<  1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        0, 0, 0, 1;
+
+    auto estimated_transform = register_surfaces(surface1, surface2);
+
+    REQUIRE( estimated_transform.isApprox(expected_result, 0.01) );
 }
