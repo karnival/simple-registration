@@ -2,22 +2,28 @@
 
 Eigen::ArrayXi find_closest_points(const Eigen::MatrixXd& surface1, const Eigen::MatrixXd& surface2) {
     Eigen::ArrayXi lookup_table(surface1.cols());
+    bool used[surface1.cols()];
+
     for(int i = 0; i < surface1.cols(); i++) {
-        lookup_table(i) = i;
+        lookup_table(i) = 0;
+        used[i] = false;
     }
 
     // For each point in the floating surface, find the closest point in the reference surface, then update lookup_table accordingly.
-    // TODO: ensure that there is a one-to-one correspondence between points after updating lookup_table.
     for(int j = 0; j < surface1.cols(); j++) {
         auto v1 = surface1.col(j);
-        auto distance_old = (surface2.col(lookup_table[j]) - surface1.col(j)).norm();
+        double distance_old = 1E10; 
 
         for(int k = 0; k < surface2.cols(); k++) {
-            auto v2 = surface2.col(k);
-            auto distance_new = (v2 - v1).norm();
-            if(distance_new < distance_old) {
-                lookup_table[j] = k;
-                distance_old = (surface2.col(lookup_table[j]) - surface1.col(j)).norm();
+            if(used[k] == false) {
+                auto v2 = surface2.col(k);
+                auto distance_new = (v2 - v1).norm();
+                if(distance_new < distance_old) {
+                    used[lookup_table[j]] = false;
+                    lookup_table[j] = k;
+                    used[k] = true;
+                    distance_old = distance_new;
+                }
             }
         }
     }
@@ -53,9 +59,7 @@ Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::
         lookup_closest = find_closest_points(surface1, transformed_pointcloud);
         closest_points = reorder_points(surface2, lookup_closest);
 
-        std::cout << "error before update is " << error_new << std::endl;
         error_new = fiducial_registration_error(surface1, closest_points, transform);
-        std::cout << "error after update is " << error_new << std::endl;
     } while(error_new < error);
 
     return transform_old;
