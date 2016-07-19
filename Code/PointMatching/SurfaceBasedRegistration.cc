@@ -1,9 +1,9 @@
 #include <PointMatching.cc>
 
-Eigen::MatrixXd find_closest_points(const Eigen::MatrixXd& surface1, const Eigen::MatrixXd& surface2) {
-    int lookup_table[surface1.cols()];
+Eigen::ArrayXi find_closest_points(const Eigen::MatrixXd& surface1, const Eigen::MatrixXd& surface2) {
+    Eigen::ArrayXi lookup_table(surface1.cols());
     for(int i = 0; i < surface1.cols(); i++) {
-        lookup_table[i] = i;
+        lookup_table(i) = i;
     }
 
     // For each point in the floating surface, find the closest point in the reference surface, then update lookup_table accordingly.
@@ -21,28 +21,42 @@ Eigen::MatrixXd find_closest_points(const Eigen::MatrixXd& surface1, const Eigen
             }
         }
     }
-    
-    // Now reorder the floating surface so corresponding points are in the same locations for floating and reference.
-    auto surface3 = surface2;
-    for(int i = 0; i < surface1.cols(); i++) {
-        surface3.col(i) << surface2.col(lookup_table[i]);
+
+    return lookup_table;
+}
+
+Eigen::MatrixXd reorder_points(const Eigen::MatrixXd& surface, const Eigen::ArrayXi& lookup_table) {
+    auto reordered = surface;
+    for(int i = 0; i < surface.cols(); i++) {
+        reordered.col(i) << surface.col(lookup_table(i));
     }
 
-    return surface3;
+    return reordered;
 }
 
 Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::MatrixXd& surface2) {
-    auto transform = estimate_rigid_transform(surface1, surface2);
+    auto lookup_closest = find_closest_points(surface1, surface2);
+    auto closest_points = reorder_points(surface2, lookup_closest);
+    Eigen::Matrix4d transform;
+    Eigen::Matrix4d transform_old;
+    auto transformed_pointcloud = surface2;
+    double error = 0;
+    double error_new = fiducial_registration_error(surface1, transformed_pointcloud, transform);
 
-    for(int i = 0; i < 2; i++) {
-        auto transformed_pointcloud = apply_transform(surface2, transform);
-        auto closest_points = find_closest_points(surface1, transformed_pointcloud);
+     do {
+        transform_old = transform;
+        error = error_new;
 
-        auto error = fiducial_registration_error(surface1, closest_points, transform);
-        std::cout << "Error is " << error << std::endl;
-
+        // Need to match up closest_points information (i.e. reordering) with untransformed surface2.
         transform = estimate_rigid_transform(surface1, closest_points);
-    }
+        transformed_pointcloud = apply_transform(closest_points, transform);
+        lookup_closest = find_closest_points(surface1, transformed_pointcloud);
+        closest_points = reorder_points(surface2, lookup_closest);
 
-    return transform;
+        std::cout << "error before update is " << error_new << std::endl;
+        error_new = fiducial_registration_error(surface1, closest_points, transform);
+        std::cout << "error after update is " << error_new << std::endl;
+    } while(error_new < error);
+
+    return transform_old;
 }

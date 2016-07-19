@@ -236,17 +236,17 @@ TEST_CASE( "can handle coplanar/colinear" ) {
     }
 }
 
-TEST_CASE( "can register two surfaces", "[register_surfaces]" ) {
-    Eigen::MatrixXd surface1(3,4);
-    Eigen::MatrixXd surface2(3,4);
+TEST_CASE( "can register two surfaces with no transformation, just reordering points", "[register_surfaces]" ) {
+    Eigen::MatrixXd surface1(3,5);
+    Eigen::MatrixXd surface2(3,5);
 
-    surface1 << 1, 2, 5, 8,
-                1, 8, 2, 3,
-                2, 6, 2, 8;
+    surface1 << 1, 2, 5, 8, 8,
+                1, 8, 2, 3, 9,
+                2, 6, 2, 8, 9;
 
-    surface2 << 2, 1, 5, 8,
-                8, 1, 2, 3,
-                6, 2, 2, 8;
+    surface2 << 2, 1, 5, 8, 8,
+                8, 1, 2, 3, 9,
+                6, 2, 2, 8, 9;
 
     Eigen::Matrix4d expected_result;
     expected_result <<  1, 0, 0, 0,
@@ -255,6 +255,50 @@ TEST_CASE( "can register two surfaces", "[register_surfaces]" ) {
                         0, 0, 0, 1;
 
     auto estimated_transform = register_surfaces(surface1, surface2);
+
+    REQUIRE( estimated_transform.isApprox(expected_result, 0.01) );
+}
+
+TEST_CASE ("can match up the closest points", "[find_closest_points]" ) {
+    Eigen::MatrixXd surface1(3,10);
+    Eigen::MatrixXd surface2(3,10);
+
+    surface1 << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10;
+
+    surface2 << 2, 1, 3, 4, 6, 5, 8, 9, 7, 10,
+                2, 1, 3, 4, 6, 5, 8, 9, 7, 10,
+                2, 1, 3, 4, 6, 5, 8, 9, 7, 10;
+
+    auto lookup_closest = find_closest_points(surface1, surface2);
+    auto closest_points = reorder_points(surface2, lookup_closest);
+
+    REQUIRE( closest_points.isApprox(surface1));
+
+}
+
+TEST_CASE( "can register two surfaces with a transformation between them", "[register_surfaces]" ) {
+    Eigen::MatrixXd surface1(3,5);
+    Eigen::MatrixXd surface2(3,5);
+
+    surface1 << 1, 2, 5, 8, 8,
+                1, 8, 2, 3, 9,
+                2, 6, 2, 8, 9;
+
+    surface2 << 7.07, 1.41,  4.94,  7.77, 12.0208,
+                4.24, 0.00, -2.12, -3.53,  0.7071,
+                6.00, 2.00,  2.00,  8.00,  9.0000;
+
+    Eigen::Matrix4d expected_result;
+    expected_result <<  0.71, 0.71, 0.00, 0.00,
+                       -0.71, 0.71, 0.00, 0.00,
+                        0.00, 0.00, 1.00, 0.00,
+                        0.00, 0.00, 0.00, 1.00;
+
+    auto estimated_transform = register_surfaces(surface1, surface2);
+
+    std::cout << "Got " << estimated_transform << std::endl;
 
     REQUIRE( estimated_transform.isApprox(expected_result, 0.01) );
 }
