@@ -302,3 +302,19 @@ TEST_CASE( "can register two surfaces with a transformation between them", "[reg
 
     REQUIRE( estimated_transform.isApprox(expected_result, 0.01) );
 }
+
+TEST_CASE( "can load a pointcloud from a file", "[load_pointcloud_from_file]" ) {
+    SECTION( "successfully load pointcloud" ) {
+        auto cloud = load_pointcloud_from_file("../Testing/PointBasedRegistrationData/moving.txt");
+        REQUIRE( cloud(0,0) == Approx(192.8328) );
+        REQUIRE( cloud(2,4) == Approx(-47.9328) );
+    }
+
+    SECTION( "throw exception when file does not exist" ) {
+        REQUIRE_THROWS_AS( auto cloud = load_pointcloud_from_file("path does not exist"), PointMatchingException );
+    }
+
+    SECTION( "throw exception when file is not valid" ) {
+        REQUIRE_THROWS_AS( auto cloud = load_pointcloud_from_file("../Testing/PointBasedRegistrationData/invalid_cloud.txt"), PointMatchingException );
+    }
+}
