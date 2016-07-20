@@ -113,9 +113,12 @@ Eigen::Matrix4d load_transform_from_file(std::string filename) {
             // Any reason other than EOF is a failure. TODO: give a specific error message for non-existent file.
             std::cerr << "Could not read file " << filename << std::endl;
             throw(PointMatchingEx);
-        } else{
+        } else if(infile.eof() && line_counter == 4) {
             infile.close();
             return transform;
+        } else {
+            std::cerr << "Could not read file " << filename << std::endl;
+            throw(PointMatchingEx);
         }
     }
 
