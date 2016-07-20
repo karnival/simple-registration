@@ -318,3 +318,17 @@ TEST_CASE( "can load a pointcloud from a file", "[load_pointcloud_from_file]" ) 
         REQUIRE_THROWS_AS( auto cloud = load_pointcloud_from_file("../Testing/PointBasedRegistrationData/invalid_cloud.txt"), PointMatchingException );
     }
 }
+
+TEST_CASE( "point-based registration for test data" ) {
+    auto data1 = "../Testing/PointBasedRegistrationData/moving.txt";
+    auto data2 = "../Testing/PointBasedRegistrationData/fixed.txt";
+    auto transform_file = "../Testing/PointBasedRegistrationData/matrix.4x4";
+
+    auto cloud1 = load_pointcloud_from_file(data1);
+    auto cloud2 = load_pointcloud_from_file(data2);
+
+    auto expected_transform = load_transform_from_file(transform_file);
+    auto estimated_transform = estimate_rigid_transform(cloud1, cloud2);
+
+    REQUIRE( estimated_transform.isApprox(expected_transform, 0.01) );
+}
