@@ -61,9 +61,7 @@ Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::
         lookup_closest = find_closest_points(surface1, transformed_pointcloud);
         closest_points = reorder_points(closest_points, lookup_closest);
 
-        std::cout << "error before update is " << error_new << std::endl;
         error_new = fiducial_registration_error(closest_points, surface1, transform);
-        std::cout << "error after update is " << error_new << std::endl;
     } while(error_new < error);
 
     return transform_old;

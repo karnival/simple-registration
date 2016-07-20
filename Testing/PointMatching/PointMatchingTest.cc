@@ -332,3 +332,17 @@ TEST_CASE( "point-based registration for test data" ) {
 
     REQUIRE( estimated_transform.isApprox(expected_transform, 0.01) );
 }
+
+TEST_CASE( "surface-based registration for test data" ) {
+    auto data1 = "../Testing/SurfaceBasedRegistrationData/fran_cut.txt";
+    auto data2 = "../Testing/SurfaceBasedRegistrationData/fran_cut_transformed.txt";
+    auto transform_file = "../Testing/SurfaceBasedRegistrationData/matrix.4x4";
+
+    auto surface1 = load_pointcloud_from_file(data1);
+    auto surface2 = load_pointcloud_from_file(data2);
+
+    auto expected_transform = load_transform_from_file(transform_file);
+    auto estimated_transform = register_surfaces(surface1, surface2, expected_transform.inverse());
+
+    REQUIRE( estimated_transform.isApprox(expected_transform.inverse(), 0.01) );
+}
