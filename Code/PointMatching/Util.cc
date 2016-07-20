@@ -124,3 +124,9 @@ Eigen::Matrix4d load_transform_from_file(std::string filename) {
 
 }
 
+void write_matrix_to_file(const Eigen::MatrixXd& matrix, std::string filename) {
+    std::ofstream outfile(filename);
+    if(outfile.is_open()) {
+        outfile << matrix;
+    }
+}

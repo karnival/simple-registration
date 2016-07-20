@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
                 ("help", "Print help message")
                 ("data1", opts::value<std::string> (&data1)->required(), "First point cloud filename.")
                 ("data2", opts::value<std::string> (&data2)->required(), "Second point cloud filename.")
-                ("out", opts::value<std::string> (&out)->required(), "Output filename.")
+                ("out", opts::value<std::string> (&out), "Output filename.")
         ;
 
         opts::positional_options_description positionalOptions;
@@ -67,6 +67,11 @@ int main(int argc, char** argv) {
         auto cloud2 = load_pointcloud_from_file(data2);
 
         auto transform = estimate_rigid_transform(cloud1, cloud2);
+
+        if(vm.count("out")) {
+            write_matrix_to_file(transform, out);
+        }
+
         std::cout << "Estimated transform was " << std::endl << transform << std::endl;
     } catch(std::exception& e) {
         std::cerr << "Unhandled Exception reached the top of main: " 
