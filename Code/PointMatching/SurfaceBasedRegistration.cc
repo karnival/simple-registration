@@ -1,4 +1,6 @@
-#include <PointMatching.cc>
+#include <SurfaceBasedRegistration.hpp>
+#include <PointMatching.hpp>
+#include <Util.hpp>
 
 Eigen::ArrayXi find_closest_points(const Eigen::MatrixXd& surface1, const Eigen::MatrixXd& surface2) {
     Eigen::ArrayXi lookup_table(surface1.cols());
@@ -51,6 +53,8 @@ Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::
     double error = 0;
     double error_new = fiducial_registration_error(transformed_pointcloud, surface1, transform);
 
+    int iterations_left = 100;
+
      do {
         transform_old = transform;
         error = error_new;
@@ -62,7 +66,9 @@ Eigen::Matrix4d register_surfaces(const Eigen::MatrixXd& surface1, const Eigen::
         closest_points = reorder_points(closest_points, lookup_closest);
 
         error_new = fiducial_registration_error(closest_points, surface1, transform);
-    } while(error_new < error);
+
+        iterations_left--;
+    } while(error_new < error && iterations_left > 1);
 
     return transform_old;
 }

@@ -5,7 +5,9 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
-#include <SurfaceBasedRegistration.cc>
+#include <SurfaceBasedRegistration.hpp>
+
+#include <Util.hpp>
 
 int main(int argc, char** argv) {
     try {

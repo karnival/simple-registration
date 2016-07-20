@@ -6,8 +6,9 @@
 #include <Eigen/SVD>
 #include <Eigen/Geometry>
 
-#include "Exceptions.cc"
-#include "Util.cc"
+#include <PointMatching.hpp>
+#include <Exceptions.hpp>
+#include <Util.hpp>
 
 Eigen::Matrix3d find_rotation(const Eigen::MatrixXd& H) {
     // Estimate rotation matrix given H, the matrix product of residuals in both pointsets.

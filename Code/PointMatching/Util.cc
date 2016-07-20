@@ -1,8 +1,13 @@
+/* Small utility functions useful for point-based registration */
+#include <Util.hpp>
+
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <exception>
-/* Small utility functions useful for point-based registration */
+
+#include <Eigen/Dense>
+#include <Exceptions.hpp>
 
 bool isApproxEqual(double a, double b, double eps) {
     // Check whether a and b are equal, to within tolerance eps.

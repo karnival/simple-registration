@@ -13,7 +13,7 @@
 #============================================================================*/
 
 add_executable(PointMatchingTest PointMatchingTest.cc)
-target_link_libraries(PointMatchingTest)
+target_link_libraries(PointMatchingTest PointMatching SurfaceBasedRegistration)
 
 #add_executable(SurfaceMatchingTest SurfaceMatchingTest.cc)
 #target_link_libraries(SurfaceMatchingTest)

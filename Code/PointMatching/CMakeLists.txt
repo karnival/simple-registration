@@ -12,7 +12,7 @@
 #
 #============================================================================*/
 
-add_library(PointMatching PointMatching.cc)
+add_library(PointMatching Exceptions.cc Util.cc PointMatching.cc)
 target_link_libraries(PointMatching ${Boost_LIBRARIES})
 
 add_executable(PointMatchingCmd PointMatchingCmd.cc)

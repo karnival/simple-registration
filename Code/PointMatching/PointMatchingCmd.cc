@@ -2,10 +2,13 @@
 #include <fstream>
 #include <string>
 
+#include <Eigen/Dense>
+
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
-#include <PointMatching.cc>
+#include <PointMatching.hpp>
+#include <Util.hpp>
 
 int main(int argc, char** argv) {
     try {

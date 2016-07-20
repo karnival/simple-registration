@@ -1,6 +1,9 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include <catch.hpp>
-#include <SurfaceBasedRegistration.cc>
+#include <SurfaceBasedRegistration.hpp>
+#include <PointMatching.hpp>
+#include <Exceptions.hpp>
+#include <Util.hpp>
 
 TEST_CASE( "can find pointset average", "[find_pointset_average]" ) {
     // Create an example pointset with a known average.
