@@ -1,8 +1,6 @@
 /* Point-based registration implemented via the method of "Least-Squares Fitting of Two 3-D Point Sets", Arun et al, 1987 */
 
-#include <cstdlib>
 #include <iostream>
-#include <exception>
 
 #include <Eigen/Dense>
 #include <Eigen/SVD>

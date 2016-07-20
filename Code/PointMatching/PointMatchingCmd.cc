@@ -7,39 +7,6 @@
 
 #include <PointMatching.cc>
 
-Eigen::MatrixXd load_pointcloud_from_file(std::string filename) {
-    int max_points = 1024;
-    int line_counter = 0;
-    Eigen::MatrixXd points(3,max_points);
-
-    std::ifstream infile;
-    infile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-    try {
-        infile.open(filename);
-    
-        double x, y, z;
-    
-        while(infile >> x >> y >> z) {
-            points.col(line_counter) << x, y, z;
-            line_counter++;
-        }
-
-    } catch(std::ifstream::failure e) {
-        if(!infile.eof()) {
-            // Any reason other than EOF is a failure. TODO: give a specific error message for non-existent file.
-            std::cerr << "Could not read file " << filename << std::endl;
-            throw(PointMatchingEx);
-        } else{
-            infile.close();
-
-            auto pointcloud = points.block(0,0,3,line_counter);
-            return pointcloud;
-        }
-    }
-
-}
-
 int main(int argc, char** argv) {
     try {
         std::string appName = boost::filesystem::basename(argv[0]);

@@ -1,3 +1,7 @@
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <exception>
 /* Small utility functions useful for point-based registration */
 
 bool isApproxEqual(double a, double b, double eps) {
@@ -53,3 +57,67 @@ Eigen::MatrixXd apply_transform(const Eigen::MatrixXd& pointset, const Eigen::Ma
 
     return proposed_pointset_reduced;
 }
+
+Eigen::MatrixXd load_pointcloud_from_file(std::string filename) {
+    int max_points = 1E6;
+    int line_counter = 0;
+    Eigen::MatrixXd points(3,max_points);
+
+    std::ifstream infile;
+    infile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+    try {
+        infile.open(filename);
+    
+        double x, y, z;
+    
+        while(infile >> x >> y >> z) {
+            points.col(line_counter) << x, y, z;
+            line_counter++;
+        }
+
+    } catch(std::ifstream::failure e) {
+        if(!infile.eof()) {
+            // Any reason other than EOF is a failure. TODO: give a specific error message for non-existent file.
+            std::cerr << "Could not read file " << filename << std::endl;
+            throw(PointMatchingEx);
+        } else{
+            infile.close();
+
+            auto pointcloud = points.block(0,0,3,line_counter);
+            return pointcloud;
+        }
+    }
+
+}
+
+Eigen::Matrix4d load_transform_from_file(std::string filename) {
+    int line_counter = 0;
+    Eigen::Matrix4d transform;
+
+    std::ifstream infile;
+    infile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+    try {
+        infile.open(filename);
+    
+        double a, b, c, d;
+    
+        while(infile >> a >> b >> c >> d) {
+            transform.row(line_counter) << a, b, c, d;
+            line_counter++;
+        }
+
+    } catch(std::ifstream::failure e) {
+        if(!infile.eof()) {
+            // Any reason other than EOF is a failure. TODO: give a specific error message for non-existent file.
+            std::cerr << "Could not read file " << filename << std::endl;
+            throw(PointMatchingEx);
+        } else{
+            infile.close();
+            return transform;
+        }
+    }
+
+}
+
