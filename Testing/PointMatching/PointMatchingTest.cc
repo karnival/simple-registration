@@ -291,12 +291,12 @@ TEST_CASE( "can register two surfaces with a transformation between them", "[reg
                 6.00, 2.00,  2.00,  8.00,  9.0000;
 
     Eigen::Matrix4d expected_result;
-    expected_result <<  0.71, 0.71, 0.00, 0.00,
-                       -0.71, 0.71, 0.00, 0.00,
+    expected_result <<  0.71,-0.71, 0.00, 0.00,
+                        0.71, 0.71, 0.00, 0.00,
                         0.00, 0.00, 1.00, 0.00,
                         0.00, 0.00, 0.00, 1.00;
 
-    auto estimated_transform = register_surfaces(surface1, surface2);
+    auto estimated_transform = register_surfaces(surface1, surface2, expected_result);
 
     std::cout << "Got " << estimated_transform << std::endl;
 
