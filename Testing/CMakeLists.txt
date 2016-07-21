@@ -13,3 +13,5 @@
 #============================================================================*/
 
 add_subdirectory(PointMatching)
+file(COPY "PointBasedRegistrationData" DESTINATION "PointBasedRegistrationData")
+file(COPY "SurfaceBasedRegistrationData" DESTINATION "SurfaceBasedRegistrationData")

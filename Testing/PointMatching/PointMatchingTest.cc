@@ -308,7 +308,7 @@ TEST_CASE( "can register two surfaces with a transformation between them", "[reg
 
 TEST_CASE( "can load a pointcloud from a file", "[load_pointcloud_from_file]" ) {
     SECTION( "successfully load pointcloud" ) {
-        auto cloud = load_pointcloud_from_file("../Testing/PointBasedRegistrationData/moving.txt");
+        auto cloud = load_pointcloud_from_file("../Testing/PointBasedRegistrationData/PointBasedRegistrationData/moving.txt");
         REQUIRE( cloud(0,0) == Approx(192.8328) );
         REQUIRE( cloud(2,4) == Approx(-47.9328) );
     }
@@ -318,14 +318,14 @@ TEST_CASE( "can load a pointcloud from a file", "[load_pointcloud_from_file]" ) 
     }
 
     SECTION( "throw exception when file is not valid" ) {
-        REQUIRE_THROWS_AS( auto cloud = load_pointcloud_from_file("../Testing/PointBasedRegistrationData/invalid_cloud.txt"), PointMatchingException );
+        REQUIRE_THROWS_AS( auto cloud = load_pointcloud_from_file("../Testing/PointBasedRegistrationData/PointBasedRegistrationData/invalid_cloud.txt"), PointMatchingException );
     }
 }
 
 TEST_CASE( "point-based registration for test data" ) {
-    auto data1 = "../Testing/PointBasedRegistrationData/moving.txt";
-    auto data2 = "../Testing/PointBasedRegistrationData/fixed.txt";
-    auto transform_file = "../Testing/PointBasedRegistrationData/matrix.4x4";
+    auto data1 = "../Testing/PointBasedRegistrationData/PointBasedRegistrationData/moving.txt";
+    auto data2 = "../Testing/PointBasedRegistrationData/PointBasedRegistrationData/fixed.txt";
+    auto transform_file = "../Testing/PointBasedRegistrationData/PointBasedRegistrationData/matrix.4x4";
 
     auto cloud1 = load_pointcloud_from_file(data1);
     auto cloud2 = load_pointcloud_from_file(data2);
@@ -337,9 +337,9 @@ TEST_CASE( "point-based registration for test data" ) {
 }
 
 TEST_CASE( "surface-based registration for test data" ) {
-    auto data1 = "../Testing/SurfaceBasedRegistrationData/fran_cut.txt";
-    auto data2 = "../Testing/SurfaceBasedRegistrationData/fran_cut_transformed.txt";
-    auto transform_file = "../Testing/SurfaceBasedRegistrationData/matrix.4x4";
+    auto data1 = "../Testing/SurfaceBasedRegistrationData/SurfaceBasedRegistrationData/fran_cut.txt";
+    auto data2 = "../Testing/SurfaceBasedRegistrationData/SurfaceBasedRegistrationData/fran_cut_transformed.txt";
+    auto transform_file = "../Testing/SurfaceBasedRegistrationData/SurfaceBasedRegistrationData/matrix.4x4";
 
     auto surface1 = load_pointcloud_from_file(data1);
     auto surface2 = load_pointcloud_from_file(data2);
