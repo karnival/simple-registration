@@ -13,11 +13,12 @@ Point-based registration is implemented according to Arun et al (1987), with thi
 
 Unit tests are implemented in `bin/PointMatchingTest`. These tests serve as the main documentation for the program. There is also a command-line interface to the point-based registration, through PointMatchingCmd. If one uses the registration on the provided test-data (as is done in the relevant unit test), one gets the expected result:
 
-  Estimated transform was 
-      0.743145  3.06888e-07    -0.669131 -2.45377e-05
-     -0.421098     0.777146    -0.467676   2.7305e-05
-      0.520012      0.62932     0.577532  0.000109916
-             0            0            0            1
+|----------|-------------|------------|--------------|
+| 0.743145 | 3.06888e-07 |  -0.669131 | -2.45377e-05 |
+| 0.421098 |    0.777146 |  -0.467676 |   2.7305e-05 |
+| 0.520012 |     0.62932 |   0.577532 |  0.000109916 |
+|        0 |           0 |          0 |            1 |
+|----------|-------------|------------|--------------|
 
 This implementation of point-based registration is relatively naive, making equal use of every point in the SVD. As the number of points grows very large, the program can become slow to find the residuals matrix (the 3x3 matrix on which the SVD is performed) -- especially when the available memory is exceeded, necessitating paging. If it were necessary to handle large numbers of points, it might be wise to take a representative subset of points, and register these. Alternatively, evaluation of the residuals matrix prior to SVD might be parallelised.
 
