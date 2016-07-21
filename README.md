@@ -5,7 +5,15 @@ Build and Execution
 ===================
 The build can be in-source or out-of-source. ITK has been removed as a dependency because it is not used. Boost is used, although it no longer has a new copy installed and rebuilt with the project. Should this be necessary, the relevant Cmake changes can be reverted.
 
-To execute either of the command-line utilities, run `bin/PointMatchingCmd` or `bin/SurfaceBasedRegistrationCmd` with command-line arguments as documented in the unit tests. To run unit tests, cd to `bin`, then execute `./PointMatchingTest`.
+To execute either of the command-line utilities, run `bin/PointMatchingCmd` or `bin/SurfaceBasedRegistrationCmd` with command-line arguments as documented below and in the unit tests. To run unit tests, cd to `bin`, then execute `./PointMatchingTest`.
+
+```
+PointMatchingCmd --data1 path_to_moving.txt --data2 path_to_fixed.txt --out output_file.txt
+```
+
+```
+SurfaceBasedRegistrationCmd --data1 path_to_cloud_1.txt --data2 path_to_cloud_2.txt --out output_file.txt --init_file transform_initialisation.txt
+```
 
 Point-Based Registration
 ==================
