@@ -1,4 +1,4 @@
-Research Computing Coursework 1
+Simple-Registration
 ===============================
 
 Build and Execution
@@ -31,7 +31,7 @@ Unit tests are implemented in `bin/PointMatchingTest`. These tests serve as the 
 
 This implementation of point-based registration is relatively naive, making equal use of every point in the SVD. As the number of points grows very large, the program can become slow to find the residuals matrix (the 3x3 matrix on which the SVD is performed) -- especially when the available memory is exceeded, necessitating paging. If it were necessary to handle large numbers of points, it might be wise to take a representative subset of points, and register these. Alternatively, evaluation of the residuals matrix prior to SVD might be parallelised.
 
-Surfaced-Based Registration
+Surface-Based Registration
 ===========================
 Surface-based registration is implemented in a similar fashion to (and making use of) the aforementioned point-based registration, as suggested in the briefing sheet. The relevant higher-level function here is `register_surfaces`, which takes two point clouds and (optionally) an initial transformation as input. As with the point-based registration, it returns an estimated transformation as a 4x4 matrix. Surfaces are assumed to be represented by point clouds, in which there is no prior knowledge as to which points correspond. At every step, the estimated transform is applied, and then there is an exhausive search for the closest "floating" point to each "fixed" point. This correspondence is then used to update the estimated transform.
 
